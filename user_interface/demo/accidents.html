@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)</title><meta charset="utf-8">
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+		<link rel="stylesheet" href="../keshif.css"/ type="text/css">
+        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+        <script type="text/javascript">
+
+var QueryString = function () {
+  // This function is anonymous, is executed immediately and 
+  // the return value is assigned to QueryString!
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+        // If first entry with this name
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = pair[1];
+        // If second entry with this name
+    } else if (typeof query_string[pair[0]] === "string") {
+      var arr = [ query_string[pair[0]], pair[1] ];
+      query_string[pair[0]] = arr;
+        // If third or later entry with this name
+    } else {
+      query_string[pair[0]].push(pair[1]);
+    }
+  } 
+    return query_string;
+} ();
+
+function timeOfDayText(d){
+    switch(d){
+        case 0: return "Night: 00-06";
+        case 1: return "Morning: 06-12";
+        case 2: return "Afternoon: 12-18";
+        case 3: return "Evening: 18-24";
+    }
+}
+
+google.setOnLoadCallback( function(){
+
+    var query = 'select *';
+    var sheetInfo = {name:"Accidents"};
+    if(QueryString.set==="small") {
+        sheetInfo.range = "A1:S100";
+    }
+
+    var accCol;
+
+	browser = new kshf.Browser({
+        domID : "#chart_div",
+        categoryTextWidth:170,
+        source : {
+            gdocId : '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
+            sheets : [ sheetInfo, {name:"RoadType"} , {name:"RoadSurface"} , 
+                {name:"JuncDet"} , {name:"JuncCont"} , {name:"SpecCond"} ,
+                {name:"Severity"} , {name:"LightCond"} , {name:"WeatherCond"}
+            ]
+        },
+        loadedCb: function(){
+            accCol = kshf.dt_ColNames.Accidents;
+        },
+        facets : [
+            {
+                facetTitle: "Road Type",
+                catTableName: "RoadType",
+            },{
+                facetTitle: "Severity",
+                catTableName: "Severity",
+            },{
+                facetTitle: "Area",
+                catLabelText: function(d) { return (d.data[1]===1)? "Urban":"Rural"; }
+            },{
+                facetTitle: "Time of Day",
+                catItemMap : function(accident){
+                    var hour= accident.data[accCol['Time of Day']][0];
+                    if(hour<6) return 0;
+                    if(hour<12) return 1;
+                    if(hour<18) return 2;
+                    return 3;
+                },
+                catLabelText: function(d){ return timeOfDayText(d.data[1]); }
+            },{
+                facetTitle: "Speed Limit (mph)",
+                catItemMap: function(d){ return d.data[7]; }
+            },{
+                facetTitle: "# of Vehicles",
+                sortingOpts: [{
+                    no_resort: true,
+                    func:kshf.Util.sortFunc_Column_ParseInt_Incr
+                }]
+            },{
+                facetTitle: "Road Surface",
+                catTableName: "RoadSurface",
+                catItemMap : function(accident){
+                    var c=accident.data[accCol['Road Surface Condition']];
+                    return (c===-1)?null:c; // skip if -1
+                }
+            },{
+                facetTitle: "Light Condition",
+                layout: 'right',
+                catTableName: "LightCond",
+                catTooltipText: function(d) { return d.data[2]; }
+            },{
+                facetTitle: "Weather Condition",
+                layout: 'right',
+                catTableName: "WeatherCond",
+                catTooltipText: function(d) { return d.data[2];}
+            },{
+                facetTitle: "Special Condition",
+                layout: 'right',
+                catTableName: "SpecCond",
+                catItemMap : function(accident){
+                    var c=accident.data[accCol['Special Condition']];
+                    return (c===0)?null:c; // skip if 0
+                },
+                catTooltipText: function(d) { return d.data[2]; }
+            },{
+                facetTitle: "Junction Detail",
+                layout: 'right',
+                catTableName: "JuncDet",
+                catItemMap : function(accident){
+                    var c=accident.data[accCol['Junction Detail']];
+                    return (c===-0)?null:c; // skip if 0
+                },
+                collapsed: true
+            },{
+                facetTitle: "Junction Control",
+                layout: 'right',
+                catTableName: "JuncCont",
+                catItemMap : function(accident){
+                    var c=accident.data[accCol['Junction Control']];
+                    return (c===-1)?null:c; // skip if 0
+                },
+                collapsed: true
+            },{
+                facetTitle: "Date", layout: 'bottom'
+            }
+        ],
+        itemDisplay: {
+            sortColWidth: 70,
+            sortingOpts : [
+                {   name: 'Date',
+                    label: function(accident){ 
+                        var date=accident.data[accCol.Date];
+                        return (date.getUTCMonth()+1)+"-"+date.getUTCFullYear(); 
+                    }
+                }
+            ],
+            detailsToggle : "Multi",
+            content: 'Accident_Index'
+        }
+    });
+});
+
+</script>
+<style>
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+#chart_div{
+    height: 700px;
+    width: 1100px;
+}
+
+</style>
+	</head>
+    <body>
+        <div class="contents"><div id="chart_div"></div></div>
+    </body>
+</html>
