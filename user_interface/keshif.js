@@ -1274,13 +1274,17 @@ kshf.List = function(kshf_, config, root){
             d3.event.preventDefault();
         });    
 
-    this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
-
+    //this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
+    console.log("listDiv:%o",this.listDiv);
+    this.dom.listHeader=this.listDiv.append('div').attr('class', "listHeader");
+    this.dom.map = this.listDiv.append('div').attr('id','map-canvas')
+        .style('width',"100%").style('height', "700px");
+    initialize_map();
     this.dom.listHeader_TopRow = this.dom.listHeader.append("div").attr("class","topRow");
     this.dom.listHeader_BottomRow = this.dom.listHeader.append("div").attr("class","bottomRow")
         .append("span").attr("class","bottomRowRow");
 
-    this.dom.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup")
+    this.dom.listItemGroup=this.listDiv.append("div").attr("class","listItemGroup").style('display',"none")
         .on("scroll",function(d){
             // showMore display
             if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
@@ -3154,7 +3158,10 @@ kshf.Browser.prototype = {
             }
             this.listDisplay.updateContentWidth(widthListDisplay);
 
-            this.layoutList.style("width",widthListDisplay+"px").style('display', "none");
+            console.log("llist:%o",this.layoutList);
+            this.layoutList.style("width",widthListDisplay+"px");
+            //this.layoutList.style("width", "500px");
+                //.style('display', "none");
             // this.layoutMiddle
             //      .style("width",widthListDisplay+"px")
             //      .style("display",this.facetsMiddle.length>0?"inline-block":"none")

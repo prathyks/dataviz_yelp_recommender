@@ -132,7 +132,7 @@
                 
 
             });
-initialize_map();
+            //initialize_map();
 
 });
 
@@ -144,13 +144,19 @@ initialize_map();
 }
 #chart_div{
     height: 700px;
-    width: 40%;
+    width: 100%;
+    float:left;
 }
-#map-canvas { height: 600px; margin: 0; padding: 0; width:60%;}
+/*#map-canvas { height: 600px; margin: 0; padding: 0; width:60%;}*/
 </style>
 </head>
 <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="map-canvas"></div>
+    <div class="contents">
+        <div id="chart_div">
+            <!-- <div class="listHeader"></div>     -->
+        </div>
+        
+        <!-- <div id="map-canvas"></div> -->
+    </div>
 </body>
 </html>
