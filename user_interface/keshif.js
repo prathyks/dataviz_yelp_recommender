@@ -31,7 +31,9 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
-
+    
+    
+var dataItems = '';
 // load google visualization library only if google scripts were included
 if(typeof google !== 'undefined'){
     google.load('visualization', '1', {'packages': []});
@@ -979,10 +981,16 @@ kshf.Filter.prototype = {
 
         this._refreshFilterSummary();
 
+        console.log("outside if");
         if(forceUpdate===true){
+
             this.browser.update_itemsWantedCount();
             this.browser.refresh_filterClearAll();
-            if(stateChanged) this.browser.updateAfterFilter(-1);
+            console.log("stateChange:"+stateChanged);
+            if(stateChanged){
+              this.browser.updateAfterFilter(-1);  
+              console.log("inside if");
+            } 
             if(sendLog) sendLog(kshf.LOG.FILTER_ADD,this.browser.getFilterState());
         }
     },
@@ -1835,20 +1843,27 @@ kshf.List.prototype = {
         }
         return sortValueType_;
     },
+
     /** Updates visibility of list items */
     updateItemVisibility: function(showMoreOnly, noAnimation){
         var me = this;
         var visibleItemCount=0;
+        dataItems = '';
+
 
         this.dom.listItems.each(function(item){
             var domItem = this;
 
             var isVisible     = (item.visibleOrder>=0) && (item.visibleOrder<me.maxVisibleItems);
             var isVisible_pre = (item.visibleOrder_pre>=0) && (item.visibleOrder_pre<me.maxVisibleItems);
+
+
             if(isVisible) {
                 visibleItemCount++;
+                dataItems += item.data + "\n";
                 if(me.visibleCb) me.visibleCb.call(this,item);
             }
+
 
             if(showMoreOnly){
                 domItem.style.display = isVisible?'':'none';
@@ -1910,18 +1925,20 @@ kshf.List.prototype = {
         this.updateVisibleIndex();
         this.maxVisibleItems = kshf.maxVisibleItems_default;
         this.updateItemVisibility(false);
+        //window.alert("data:"+dataItems);
+        console.log("data:"+dataItems);
     },
     /** -- */
     updateAfterFilter: function(){
         var me=this;
-        if(this.scrollTop_cache===0 && false){
+        //if(this.scrollTop_cache===0 && false){
             me.updateAfterFiltering_do();
             return;
-        }
+        //}
         // scroll to top
         var startTime = null;
-        var scrollDom = this.dom.listItemGroup[0][0];
-        var scrollInit = scrollDom.scrollTop;
+        // var scrollDom = this.dom.listItemGroup[0][0];
+        // var scrollInit = scrollDom.scrollTop;
         var easeFunc = d3.ease('cubic-in-out');
         var scrollTime = 1000;
         var animateToTop = function(timestamp){
@@ -1929,12 +1946,12 @@ kshf.List.prototype = {
             if(startTime===null) startTime = timestamp;
             // complete animation in 500 ms
             progress = (timestamp - startTime)/scrollTime;
-            scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
-            if(scrollDom.scrollTop===0){
-                me.updateAfterFiltering_do();
-            } else {
-                window.requestAnimationFrame(animateToTop);
-            }
+            //scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
+            // if(scrollDom.scrollTop===0){
+            //     me.updateAfterFiltering_do();
+            // } else {
+            //     window.requestAnimationFrame(animateToTop);
+            // }
         };
         window.requestAnimationFrame(animateToTop);
     },
@@ -2071,7 +2088,7 @@ kshf.Browser = function(options){
 
     this.layoutLeft   = this.root.append("div").attr("class", "layout_block layout_left");
     //this.layoutRight  = this.root.append("div").attr("class", "layout_block layout_right");
-    //this.layoutList   = this.root.append("div").attr("class", "layout_block listDiv")
+    this.layoutList   = this.root.append("div").attr("class", "layout_block listDiv")
     //this.layoutMiddle = this.root.append("div").attr("class", "layout_block layout_middle")
     //this.layoutBottom = this.root.append("div").attr("class", "layout_block layout_bottom");
 
@@ -3051,13 +3068,13 @@ kshf.Browser.prototype = {
         if(this.listDisplay) {
             var listDivTop = 0;
             // get height of header
-            var listHeaderHeight=this.listDisplay.dom.listHeader[0][0].offsetHeight;
-            var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight; // 2 is bottom padding
-            if(this.facetsBottom.length>0){
-                listDisplayHeight-=bottomFacetsHeight;
-            }
-            listDisplayHeight-=midPanelHeight;
-            this.listDisplay.dom.listItemGroup.style("height",listDisplayHeight+"px");
+            //var listHeaderHeight=this.listDisplay.dom.listHeader[0][0].offsetHeight;
+            // var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight; // 2 is bottom padding
+            // if(this.facetsBottom.length>0){
+            //     listDisplayHeight-=bottomFacetsHeight;
+            // }
+            // listDisplayHeight-=midPanelHeight;
+            // this.listDisplay.dom.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
     initBarChartWidth: function(){
@@ -3137,13 +3154,13 @@ kshf.Browser.prototype = {
             }
             this.listDisplay.updateContentWidth(widthListDisplay);
 
-            this.layoutList.style("width",widthListDisplay+"px");
-            this.layoutMiddle
-                .style("width",widthListDisplay+"px")
-                .style("display",this.facetsMiddle.length>0?"inline-block":"none")
-                ;
-            this.layoutLeft.style("margin-right",marginLeft+"px")  
-            this.layoutRight.style("margin-left",marginRight+"px")  
+            this.layoutList.style("width",widthListDisplay+"px").style('display', "none");
+            // this.layoutMiddle
+            //      .style("width",widthListDisplay+"px")
+            //      .style("display",this.facetsMiddle.length>0?"inline-block":"none")
+            //      ;
+            //this.layoutLeft.style("margin-right",marginLeft+"px")  
+            //this.layoutRight.style("margin-left",marginRight+"px")  
         }
     },
     /** -- */

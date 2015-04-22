@@ -20,7 +20,7 @@
 
     <script type="text/javascript">
 
-        var QueryString = function () {
+    var QueryString = function () {
             // This function is anonymous, is executed immediately and
             // the return value is assigned to QueryString!
             var query_string = {};
@@ -70,11 +70,11 @@
                 source : {
                     gdocId : '1yXkqwct47iX9-yXzalcQdgZ5Cx-MdYSipYqWGD5ewPs',
                     sheets : [
-                        {name: "MainTable"},
-                        {name: "Ambience"},
-                        {name: "Attributes"},
-                        {name: "Categories"},
-                        {name: "Ratings"}
+                    {name: "MainTable"},
+                    {name: "Ambience"},
+                    {name: "Attributes"},
+                    {name: "Categories"},
+                    {name: "Ratings"}
                     ]
                 },
                 loadedCb: function(){
@@ -87,45 +87,70 @@
                     kshf.Util.cellToArray(kshf.dt.MainTable, [MainCol.Attributes, MainCol.Categories, MainCol.Ambience]);
                 },
                 facets: [
+                {
+                    facetTitle: "Categories",
+                    catTableName: "Categories",
+                    catLabelText: function(cat){ return cat.data[CatCol.category]; }
+                },{
+                    facetTitle: "Attributes",
+                    catTableName: "Attributes",
+                    catLabelText: function(cat){ return cat.data[AttriCol.Attributes]; }
+                },{
+                    facetTitle: "Ambience",
+                    catTableName: "Ambience",
+                    catLabelText: function(cat){ return cat.data[AmbiCol.Ambience]; }
+                },{
+                    facetTitle: "Ratings",
+                    catTableName: "Ratings",
+                    catLabelText: function(cat){ return cat.data[RatCol.rating]; }
+                }
+                ],
+
+                visibleCb : function(d){
+
+                },
+
+                itemDisplay: {
+                    sortColWidth: 45,
+                    sortingOpts:[
                     {
-                        facetTitle: "Categories",
-                        catTableName: "Categories",
-                        catLabelText: function(cat){ return cat.data[CatCol.category]; }
-                    },{
-                        facetTitle: "Attributes",
-                        catTableName: "Attributes",
-                        catLabelText: function(cat){ return cat.data[AttriCol.Attributes]; }
-                    },{
-                        facetTitle: "Ambience",
-                        catTableName: "Ambience",
-                        catLabelText: function(cat){ return cat.data[AmbiCol.Ambience]; }
-                    },{
-                        facetTitle: "Ratings",
-                        catTableName: "Ratings",
-                        catLabelText: function(cat){ return cat.data[RatCol.rating]; }
+                        name : 'Year',
+                        value : function(d){
+                            return d.data[MainCol['id']];
+                        }
                     }
-                ]
+                    ],
+                    textSearch: 'title',
+                    detailsToggle: "One",
+                    contentFunc: function(d){
+                        var j;
+                        var str = "";
+                        str = "<p>" + d.data[MainCol.title] + "</p>";
+                        return str;
+                    } 
+                }
                 
 
             });
-            initialize_map();
-        });
+initialize_map();
 
-    </script>
-    <style>
-        .iteminfo a{
-            color:#606060;
-            font-style:italic;
-        }
-        #chart_div{
-            height: 700px;
-            width: 450px;
-        }
-    #map-canvas { height: 600px; margin: 0; padding: 0; width:800px;}
-    </style>
+});
+
+</script>
+<style>
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+#chart_div{
+    height: 700px;
+    width: 40%;
+}
+#map-canvas { height: 600px; margin: 0; padding: 0; width:60%;}
+</style>
 </head>
 <body>
-<div class="contents"><div id="chart_div"></div></div>
-<div id="map-canvas"></div>
+    <div class="contents"><div id="chart_div"></div></div>
+    <div id="map-canvas"></div>
 </body>
 </html>
