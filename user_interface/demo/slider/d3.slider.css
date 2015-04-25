@@ -11,11 +11,27 @@
 }  
 
 .d3-slider-range {
-  background:#2980b9;
+  background: rgba(30, 102, 194, 0.98);
   left:0px;
   right:0px;
   height: 0.8em;
   position: absolute;
+}
+
+.d3-slider-left-range {
+    background: rgba(194, 31, 166, 0.98);
+    left:0px;
+    right:0px;
+    height: 0.8em;
+    position: absolute;
+}
+
+.d3-slider-right-range {
+    background: rgba(10, 194, 24, 0.98);
+    left:0px;
+    right:0px;
+    height: 0.8em;
+    position: absolute;
 }
 
 .d3-slider-range-vertical {
@@ -37,7 +53,7 @@
     height: 1.2em;
     border: 1px solid #d3d3d3;
     border-radius: 4px;
-    background: #eee;
+    background: #abcdab;
     background: linear-gradient(to bottom, #eee 0%, #ddd 100%);
     z-index: 3;
 }

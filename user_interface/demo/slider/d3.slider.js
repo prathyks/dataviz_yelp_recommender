@@ -46,6 +46,8 @@ return function module() {
       handle1,
       handle2 = null,
       divRange,
+      divRange_1,
+      divRange_2,
       sliderLength;
 
   function slider(selection) {
@@ -100,14 +102,21 @@ return function module() {
         
         if (toType(value) == "array" && value.length == 2) {
           divRange = d3.select(this).append('div').classed("d3-slider-range", true);
+          divRange_1 = d3.select(this).append('div').classed("d3-slider-left-range", true);
+          divRange_2 = d3.select(this).append('div').classed("d3-slider-right-range", true);
+
 
           handle1.style("left", formatPercent(scale(value[ 0 ])));
           divRange.style("left", formatPercent(scale(value[ 0 ])));
+
           drag.on("drag", onDragHorizontal);
 
           var width = 100 - parseFloat(formatPercent(scale(value[ 1 ])));
+          var width_1 = 100 - parseFloat(formatPercent(scale(value[ 0 ])));
           handle2.style("left", formatPercent(scale(value[ 1 ])));
           divRange.style("right", width+"%");
+          divRange_1.style("right",width_1+"%");
+          divRange_2.style("left", formatPercent(scale(value[ 1 ])));
           drag.on("drag", onDragHorizontal);
 
         } else {
@@ -282,6 +291,8 @@ return function module() {
       if ( active === 1 ) {
         if (toType(value) == "array" && value.length == 2) {
           (position === "left") ? divRange.style("left", newPos) : divRange.style("bottom", newPos);
+          var width = 100 - parseFloat(newPos);
+          (position === "left") ? divRange_1.style("right", width+"%") : divRange.style("bottom", newPos);
         }
 
         if (animate) {
@@ -297,6 +308,7 @@ return function module() {
         var top = 100 - parseFloat(newPos);
 
         (position === "left") ? divRange.style("right", width + "%") : divRange.style("top", top + "%");
+        (position === "left") ? divRange_2.style("left", newPos) : divRange.style("top", top + "%");
         
         if (animate) {
           handle2.transition()

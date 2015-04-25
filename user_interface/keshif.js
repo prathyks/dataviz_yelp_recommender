@@ -1280,9 +1280,9 @@ kshf.List = function(kshf_, config, root){
     
     // Code to add slider which gives weight to the filtering criteria in recommendation.
     this.dom.slider = this.listDiv.append('div').attr('id','slider')
-    .style('width',"500px").style('height', "30px");
+    .style('width',"500px").style('height', "30px").style("margin-left","100px");
 
-    this.dom.slider.call(d3.slider().axis(true).value( [ 10, 50 ] ).on("slide", function(evt, v) {
+    this.dom.slider.call(d3.slider().axis(true).value( [ 33, 66 ] ).on("slide", function(evt, v) {
             //d3.select('#slider3textmin').text(value[ 0 ]);
             console.log(v[0] + ", "+v[1]);
             //window.alert(v[0] + ", "+v[1]);
