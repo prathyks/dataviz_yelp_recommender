@@ -1277,6 +1277,18 @@ kshf.List = function(kshf_, config, root){
     //this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
     console.log("listDiv:%o",this.listDiv);
     this.dom.listHeader=this.listDiv.append('div').attr('class', "listHeader");
+    
+    // Code to add slider which gives weight to the filtering criteria in recommendation.
+    this.dom.slider = this.listDiv.append('div').attr('id','slider')
+    .style('width',"500px").style('height', "30px");
+
+    this.dom.slider.call(d3.slider().axis(true).value( [ 10, 50 ] ).on("slide", function(evt, v) {
+            //d3.select('#slider3textmin').text(value[ 0 ]);
+            console.log(v[0] + ", "+v[1]);
+            //window.alert(v[0] + ", "+v[1]);
+            //d3.select('#slider3textmax').text(value[ 1 ]);
+        }));
+
     this.dom.map = this.listDiv.append('div').attr('id','map-canvas')
         .style('width',"100%").style('height', "700px");
     initialize_map();

@@ -6,6 +6,7 @@
 	var directionsDisplay;
 
 	function initialize_map() {
+
 		directionsDisplay = new google.maps.DirectionsRenderer();
 		var mapOptions = {
 			center: { lat: home.lat, lng: home.long},
