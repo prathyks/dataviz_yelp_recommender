@@ -68,23 +68,23 @@
                 rightPanelLabelWidth: 0,
                 barChartWidth: 200,
                 source : {
-                    gdocId : '1yXkqwct47iX9-yXzalcQdgZ5Cx-MdYSipYqWGD5ewPs',
+                    gdocId : '1l8_CTGgWQNAyagPRICLzPd-b9ZrqJarBdkT_7leR7mE',
                     sheets : [
                     {name: "MainTable"},
-                    {name: "Ambience"},
-                    {name: "Attributes"},
+                    {name: "Price_Range"},
+                    {name: "Distance"},
                     {name: "Categories"},
                     {name: "Ratings"}
                     ]
                 },
                 loadedCb: function(){
                     MainCol = kshf.dt_ColNames.MainTable;
-                    AmbiCol = kshf.dt_ColNames.Ambience;
-                    AttriCol = kshf.dt_ColNames.Attributes;
+                    AmbiCol = kshf.dt_ColNames.Price_Range;
+                    AttriCol = kshf.dt_ColNames.Distance;
                     CatCol = kshf.dt_ColNames.Categories;
                     RatCol = kshf.dt_ColNames.Ratings;
                     // convert authors and keywords columns in publication table ( space separated IDs) to array
-                    kshf.Util.cellToArray(kshf.dt.MainTable, [MainCol.Attributes, MainCol.Categories, MainCol.Ambience]);
+                    //kshf.Util.cellToArray(kshf.dt.MainTable, [MainCol.Attributes, MainCol.Categories]);
                 },
                 facets: [
                 {
@@ -92,13 +92,13 @@
                     catTableName: "Categories",
                     catLabelText: function(cat){ return cat.data[CatCol.category]; }
                 },{
-                    facetTitle: "Attributes",
-                    catTableName: "Attributes",
-                    catLabelText: function(cat){ return cat.data[AttriCol.Attributes]; }
+                    facetTitle: "Distance",
+                    catTableName: "Distance",
+                    catLabelText: function(cat){ return cat.data[AttriCol.Distance]; }
                 },{
-                    facetTitle: "Ambience",
-                    catTableName: "Ambience",
-                    catLabelText: function(cat){ return cat.data[AmbiCol.Ambience]; }
+                    facetTitle: "Price_Range",
+                    catTableName: "Price_Range",
+                    catLabelText: function(cat){ return cat.data[AmbiCol.Price_Range]; }
                 },{
                     facetTitle: "Ratings",
                     catTableName: "Ratings",
