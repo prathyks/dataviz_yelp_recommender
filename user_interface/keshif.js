@@ -1942,7 +1942,8 @@ kshf.List.prototype = {
         this.maxVisibleItems = kshf.maxVisibleItems_default;
         this.updateItemVisibility(false);
         //window.alert("data:"+dataItems);
-        console.log("data:"+dataItems);
+        // console.log("data:"+dataItems);
+        update_maps(dataItems);
     },
     /** -- */
     updateAfterFilter: function(){
