@@ -57,7 +57,8 @@ var kshf = {
       sub.prototype.constructor = sub;
     },
     num_of_charts: 0,
-    maxVisibleItems_default: 100, 
+    //maxVisibleItems_default: 100, 
+    maxVisibleItems_default: 1550,
     dt: {},
     dt_id: {},
     dt_ColNames: {},
@@ -1275,15 +1276,16 @@ kshf.List = function(kshf_, config, root){
         });    
 
     //this.dom.listHeader=this.listDiv.append("div").attr("class","listHeader");
-    console.log("listDiv:%o",this.listDiv);
+    //console.log("listDiv:%o",this.listDiv);
     this.dom.listHeader=this.listDiv.append('div').attr('class', "listHeader");
     
     // Code to add slider which gives weight to the filtering criteria in recommendation.
     this.dom.slider = this.listDiv.append('div').attr('id','slider')
     .style('width',"500px").style('height', "30px").style("margin-left","100px");
 
-    this.dom.slider.call(d3.slider().axis(true).value( [ 33, 66 ] ).on("slide", function(evt, v) {
+    this.dom.slider.call(d3.slider().axis(true).value( [ 33, 66 ] ).on("slideend", function(evt, v) {
             //d3.select('#slider3textmin').text(value[ 0 ]);
+            console.log("evt:%o",evt);
             update_maps_from_slider(dataItems,v[0], v[1]-v[0], 100-v[1]);
             //console.log(v[0] + ", "+v[1]);
             //window.alert(v[0] + ", "+v[1]);
@@ -3172,7 +3174,7 @@ kshf.Browser.prototype = {
             }
             this.listDisplay.updateContentWidth(widthListDisplay);
 
-            console.log("llist:%o",this.layoutList);
+            //console.log("llist:%o",this.layoutList);
             this.layoutList.style("width",widthListDisplay+"px");
             //this.layoutList.style("width", "500px");
                 //.style('display', "none");
