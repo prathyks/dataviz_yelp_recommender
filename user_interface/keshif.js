@@ -1284,7 +1284,8 @@ kshf.List = function(kshf_, config, root){
 
     this.dom.slider.call(d3.slider().axis(true).value( [ 33, 66 ] ).on("slide", function(evt, v) {
             //d3.select('#slider3textmin').text(value[ 0 ]);
-            console.log(v[0] + ", "+v[1]);
+            update_maps_from_slider(dataItems,v[0], v[1]-v[0], 100-v[1]);
+            //console.log(v[0] + ", "+v[1]);
             //window.alert(v[0] + ", "+v[1]);
             //d3.select('#slider3textmax').text(value[ 1 ]);
         }));
@@ -1943,7 +1944,7 @@ kshf.List.prototype = {
         this.updateItemVisibility(false);
         //window.alert("data:"+dataItems);
         // console.log("data:"+dataItems);
-        update_maps(dataItems);
+        update_maps_from_slider(dataItems,33,34,33);
     },
     /** -- */
     updateAfterFilter: function(){
