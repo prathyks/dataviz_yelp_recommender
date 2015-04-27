@@ -1,0 +1,148 @@
+ <html>
+<head>
+<script src="jquery-1.11.2.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+<style type="text/css">
+	#tooltip{
+		width: 400px;
+		border-style: solid;
+    	border-width: 1px;
+    	padding: 10px;
+	}
+	.title{
+		font-weight: bold;
+		font-size: 30px;
+	}
+	.bus-type{
+		font-style: italic;
+		color:gray;
+		font-size: 25px;
+	}
+	.distance{
+		font-style: italic;
+		float: right;
+		font-size: 15px;
+	}
+	.duration{
+		font-style: italic;	
+		float: right;
+		font-size: 15px;	
+	}
+	.rating{
+
+	}
+	.titleheader{
+		width: 70%;
+	}
+	.stats{
+		float:right;
+		width: 30%;
+	}
+
+	span.stars, span.stars span {
+    display: inline-block;
+    background: url(stars.png) 0 -16px repeat-x;
+    width: 80px;
+    height: 16px;
+	}
+
+	span.stars span {
+	    background-position: 0 0;
+	}
+	#priceA{
+		font-weight: bolder;
+		color: green;
+	}
+	#priceI{
+		font-weight: bolder;
+		color: gray;
+	}
+	.review{
+		width: 100%;
+		height: 100px;
+		background: white;
+		border: 1px solid #cccccc;
+		padding: 5px;
+		color:black;
+		border-radius: 10px;
+	}
+	
+
+</style>
+</head>
+<body>
+<div id="tooltip">
+	<div class="titleheader">
+		<span class="title"><span>Title  <span>
+		<span class="bus-type">type</span></span>
+	</div>
+	<div class="stats">
+		<span class="distance">3.4 mi</span>
+		<span class="duration">15 min.</span>
+	</div>
+	<div class="tooltipscores">
+		<div class="rating"><span>Rating:<span class="stars">4.5</span></span></div>
+		<div class="price"><span>Price:</span><span id="priceA">3</span><span id='priceI'></span></div>
+		<div class="senti-score"><span>Customer feedback: </span><span id='s-score'>0.4	</span></div>
+		<textarea readonly disabled class="review">Walking into this place looks nice and well kept. I liked the setup they have. I'm giving this place five star rating not for how nice and casual it is but for the food. I haven't tried everything on the menu yet, but I will that's my plan in the near future. I have had at least five items from the menu so far and I got hooked.  It all tasted to what I expected it to and I'm glad for that because there isn't a lot of kosher restaurants out here, so it's nice to know I can get kosher food in a restaurant and enjoy it. The menu selections are awesome a lot to choose from, so there's something for everybody that loves to eat from pastas to pizzas and so on. By the way this place is dairy only. Give them a try you will enjoy it.</textarea>
+	</div>
+</div>
+
+
+<script>//
+
+getPrice();
+
+var svg = d3.select(".senti-score").append("svg")
+						.attr("x","500")
+						.attr("y","500")
+						.attr("width","100")
+						.attr("height", "10");
+			
+			var rect = svg.append("rect")
+							.attr("width","100")
+							.attr("height", "10")
+							.style("fill","white")
+							.style("stroke","black");
+var s = document.getElementById('s-score').innerHTML;
+document.getElementById('s-score').innerHTML = '';
+var rect1 = svg.append("rect")
+			.attr("width", parseFloat(s)*100)
+			.attr("height", "20")
+			.style("fill","green")
+			.style("opacity",function(){if(parseFloat(s) < 0.5) return 0.5; else return parseFloat(s);})
+			.style("stroke","black");
+
+$.fn.stars = function() {
+    return $(this).each(function() {
+        val = Math.round(val * 2) / 2;
+        var val = parseFloat($(this).html());
+        var size = Math.max(0, (Math.min(5, val))) * 16;
+        var $span = $('<span />').width(size);
+        $(this).html($span);
+    });
+}
+
+$(function() {
+    $('span.stars').stars();
+});
+
+function getPrice(){
+	var price = document.getElementById('priceA').innerHTML;
+	console.log(price);
+	var strA = '';
+	var strI = '';
+	for(i = 0 ; i < 4 ; i++){
+		if(i < parseInt(price))
+			strA += '$';
+		else
+			strI += '$';
+	}
+	document.getElementById('priceA').innerHTML = strA;
+	document.getElementById('priceI').innerHTML = strI;
+}
+</script>
+
+</body>
+</html> 
