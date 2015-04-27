@@ -1293,7 +1293,7 @@ kshf.List = function(kshf_, config, root){
         }));
 
     this.dom.map = this.listDiv.append('div').attr('id','map-canvas')
-        .style('width',"100%").style('height', "700px");
+        .style('width',"100%").style('height', "600px");
     initialize_map();
     this.dom.listHeader_TopRow = this.dom.listHeader.append("div").attr("class","topRow");
     this.dom.listHeader_BottomRow = this.dom.listHeader.append("div").attr("class","bottomRow")
