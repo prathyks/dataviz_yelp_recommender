@@ -8,7 +8,31 @@ var distance_cache = [];
 var maxDist=0;
 var curr_bounds="";
 var zoomed = false;
-
+var zoomed_marker;
+var cur_loc_fixed = false;
+var styles = [
+    {
+      stylers: [
+        { hue: "#00ffe6" },
+        { saturation: -20 }
+      ]
+    },{
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [
+        { lightness: 100 },
+        { visibility: "simplified" }
+      ]
+    },{
+      featureType: "road",
+      elementType: "labels",
+      stylers: [
+        { visibility: "off" }
+      ]
+    }
+  ];
+var styledMap = new google.maps.StyledMapType(styles,
+    {name: "Styled Map"});
 
 
 function initialize_map() {
@@ -18,10 +42,15 @@ function initialize_map() {
 		center: { lat: home.lat, lng: home.long},
 		zoom: 13,
 		panControl: false,    		
-		scaleControl: true
+		scaleControl: true,
+		mapTypeControlOptions: {
+      		mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
+    	}
 	};
 	map = new google.maps.Map(document.getElementById('map-canvas'),
 		mapOptions);
+	map.mapTypes.set('map_style', styledMap);
+  	map.setMapTypeId('map_style');
 	google.maps.event.addListener(map, 'click', handleClick);
 	var trafficLayer = new google.maps.TrafficLayer();
   		//trafficLayer.setMap(map);
@@ -37,6 +66,7 @@ function initialize_map() {
 		if(zoomed == true){
 			showAllMarkers();
 			directionsDisplay.setMap(null);
+			zoomed_marker.infoWindow.close();
 			zoomed = false;
 		}else{
 			//Do nothing
@@ -55,6 +85,7 @@ function initialize_map() {
 					icon : 'google_maps/cur_loc.png'
 				});
 				calculateDistances(temp);
+				cur_loc_fixed = true;
 				//drawMarkers();
 			}, function(){
 				console.log("Geo location service failed, defaulting back to hardcoded current pos");				
@@ -66,6 +97,7 @@ function initialize_map() {
 					icon : 'google_maps/cur_loc.png'
 				});
 				calculateDistances(temp);
+				cur_loc_fixed = true;
 				//drawMarkers();
 			});
 		}else{
@@ -122,20 +154,26 @@ function initialize_map() {
 			marker_str = "google_maps/bdot.png";
 		else
 			marker_str = "google_maps/map_markers/"+location.marker;
+		var temp_infoWindow = new google.maps.InfoWindow({
+			content : location.tooltip
+		});
 		var temp_marker = new google.maps.Marker({
 			position: temp,
 			map: map,
 			animation: google.maps.Animation.DROP,
     		icon: marker_str,
     		'cur_pos': cur_pos,
-    		'infoWindow': new google.maps.InfoWindow({
-    			content: location.tooltip
-    		})
+    		'infoWindow': temp_infoWindow
     	});
+    	google.maps.event.addListener(temp_infoWindow,'closeclick',function(){
+   			handleClick();
+		});
     	var mouseMoved = false;
 		google.maps.event.addListener(temp_marker, 'click', function(){
 			var start = this.cur_pos.position;
 			var end = this.position;
+			zoomed_marker = this;
+			this.infoWindow.open(map,this);
 			var request = {
 				origin: new google.maps.LatLng(start.k, start.D),
 				destination: new google.maps.LatLng(end.k, end.D),
@@ -149,7 +187,7 @@ function initialize_map() {
     				directionsDisplay.setDirections(response);
     			}
     		});
-    		this.infoWindow.open(map,this);
+    		console.log("infoWindow:%o",this.infoWindow);
 		});
 		markers.push(temp_marker);
 	}
@@ -255,6 +293,12 @@ function initialize_map() {
     }
 
     function update_maps_from_slider(dataItems, price, Distance, Rating){
+    	if(cur_loc_fixed == false){
+    		setTimeout(function(){
+    			update_maps_from_slider(dataItems, price, Distance, Rating);
+    		},100);
+    		return;
+    	}
     	dataItems = dataItems.split("\n");
 		var itemsasArr = [];
 		//TODO:: Change 99 and put data length..
@@ -285,7 +329,6 @@ function initialize_map() {
 		itemsasArr.sort(Comparator);
 		update_maps(itemsasArr);
 	}
-
 
 	function  generateToolTipHtml(name, category, ratings,
     			pricerange, max_score, avg_score, top_review){
