@@ -2,8 +2,9 @@
     position: relative;
     font-family: Verdana,Arial,sans-serif;
     font-size: 1.1em;
-    border: 1px solid #aaaaaa;
+    border: 1px solid #000000;
     z-index: 2;
+	height: 15px;
 }
 
 .d3-slider-horizontal {
@@ -11,7 +12,7 @@
 }  
 
 .d3-slider-range {
-  background: rgba(30, 102, 194, 0.98);
+  background: rgba(0, 162, 255, 0.98);
   left:0px;
   right:0px;
   height: 0.8em;
@@ -19,7 +20,7 @@
 }
 
 .d3-slider-left-range {
-    background: rgba(194, 31, 166, 0.98);
+    background: rgba(33, 185, 3, 0.98);
     left:0px;
     right:0px;
     height: 0.8em;
@@ -27,7 +28,7 @@
 }
 
 .d3-slider-right-range {
-    background: rgba(10, 194, 24, 0.98);
+    background: rgba(211, 218, 8, 0.98);
     left:0px;
     right:0px;
     height: 0.8em;
@@ -74,25 +75,30 @@
 
 .d3-slider-axis-bottom {
     top: .8em;
+	display: none;
 }
 
 .d3-slider-axis-right {
     left: .8em;
+	display: none;
 }
 
 .d3-slider-axis path {
     stroke-width: 0;
     fill: none;
+	display: none;
 }
 
 .d3-slider-axis line {
     fill: none;
     stroke: #aaa;
     shape-rendering: crispEdges;
+	display:none;
 }
 
 .d3-slider-axis text {
     font-size: 11px;
+	display:none;
 }
 
 .d3-slider-vertical .d3-slider-handle {
