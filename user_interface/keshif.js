@@ -1463,6 +1463,7 @@ kshf.List.prototype = {
         var me=this;
         var x = this.dom.listHeader_BottomRow.append("div").attr("class","listsortcolumn")
             .style("width",(this.sortColWidth)+"px")
+			.style("display", "none")
             .style('white-space','nowrap');
         // just insert it as text
         if(this.sortingOpts.length===1){
@@ -1500,6 +1501,7 @@ kshf.List.prototype = {
 
         this.dom.listHeader_BottomRow.append("span").attr("class","sortColumn")
             .append("span").attr("class","sortButton fa")
+			.style("display", "none")
             .on("click",function(d){
                 me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
                 this.setAttribute("inverse",me.sortingOpt_Active.inverse);
