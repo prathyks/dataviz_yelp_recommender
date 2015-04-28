@@ -1,4 +1,4 @@
-	
+
 var markers = [];
 var cur_pos;
 var map;
@@ -66,8 +66,9 @@ function initialize_map() {
 		if(zoomed == true){
 			showAllMarkers();
 			directionsDisplay.setMap(null);
-			zoomed_marker.infoWindow.close();
+			// zoomed_marker.infoWindow.close();
 			zoomed = false;
+			$("#keyword_space").empty();
 		}else{
 			//Do nothing
 		}
@@ -114,7 +115,7 @@ function initialize_map() {
 			var longitude = kshf.dt.MainTable[i].data[9];
 			var distance = getDistanceFromLatLonInKm(cur_lat,cur_long, lat, longitude);
 			//console.log("distance:"+distance);
-			kshf.dt.MainTable[i].data.push(distance);
+			//kshf.dt.MainTable[i].data.push(distance);
 			if(distance > maxDist)
 				maxDist = distance;
 			distance_cache[Number(kshf.dt.MainTable[i].data[0])] = Number(distance);
@@ -154,26 +155,27 @@ function initialize_map() {
 			marker_str = "google_maps/bdot.png";
 		else
 			marker_str = "google_maps/map_markers/"+location.marker;
-		var temp_infoWindow = new google.maps.InfoWindow({
-			content : location.tooltip
-		});
+		// var temp_infoWindow = new google.maps.InfoWindow({
+		// 	content : location.tooltip
+		// });
 		var temp_marker = new google.maps.Marker({
 			position: temp,
 			map: map,
 			animation: google.maps.Animation.DROP,
     		icon: marker_str,
     		'cur_pos': cur_pos,
-    		'infoWindow': temp_infoWindow
+    		// 'infoWindow': temp_infoWindow,
+    		'keywords': location.keywords
     	});
-    	google.maps.event.addListener(temp_infoWindow,'closeclick',function(){
-   			handleClick();
-		});
+  //   	google.maps.event.addListener(temp_infoWindow,'closeclick',function(){
+  //  			handleClick();
+		// });
     	var mouseMoved = false;
 		google.maps.event.addListener(temp_marker, 'click', function(){
 			var start = this.cur_pos.position;
 			var end = this.position;
 			zoomed_marker = this;
-			this.infoWindow.open(map,this);
+			// this.infoWindow.open(map,this);
 			var request = {
 				origin: new google.maps.LatLng(start.k, start.D),
 				destination: new google.maps.LatLng(end.k, end.D),
@@ -187,7 +189,10 @@ function initialize_map() {
     				directionsDisplay.setDirections(response);
     			}
     		});
-    		console.log("infoWindow:%o",this.infoWindow);
+    		$("#keyword_space").empty();
+    		console.log("keywords:"+this.keywords);
+    		$("#keyword_space").append(this.keywords);
+    		//console.log("infoWindow:%o",this.infoWindow);
 		});
 		markers.push(temp_marker);
 	}
@@ -232,7 +237,7 @@ function initialize_map() {
     	var latlngList = new Array();
     	if(cur_pos != undefined && cur_pos.k != undefined && cur_pos.D != undefined)
     	 	latlngList.push(new google.maps.LatLng(cur_pos.k, cur_pos.D));
-    	for(var i=0; i<100 && i<dataItems.length; i++){
+    	for(var i=0; i<25 && i<dataItems.length; i++){
     		var parts = dataItems[i];
     		var catid = parts[1];
     		var lat = parts[8];
@@ -243,6 +248,9 @@ function initialize_map() {
     		var max_score = parts[12];
     		var avg_score = parts[13];
     		var top_review = parts[14];
+    		var temp_keywords = getImpKeywords(parts[15]);
+    		var keywords_html="";
+    		keywords_html = addKeywords(temp_keywords);
     		if(kshf.dt.Categories[catid] === undefined)
     			continue;
     		var catData = kshf.dt.Categories[catid].data;
@@ -251,6 +259,7 @@ function initialize_map() {
     			pricerange, max_score, avg_score, top_review);
     		//console.log("tooltip:"+tooltip);
     		var marker = catData[3];
+    		//console.log("keywords:"+keywords_html);
     		if(lat != undefined && longitude != undefined)
     			latlngList.push(new google.maps.LatLng(lat,longitude));
     		if(i<=9){
@@ -262,7 +271,8 @@ function initialize_map() {
     				"name":name,
     				"category":category,
     				"marker":marker,
-    				"tooltip":tooltip
+    				"tooltip":tooltip,
+    				"keywords":keywords_html
     			});
     		}else{
     			pins.push({
@@ -273,7 +283,8 @@ function initialize_map() {
     				"name":name,
     				"category":category,
     				"marker":"default",
-    				"tooltip":tooltip
+    				"tooltip":tooltip,
+    				"keywords":keywords_html
     			});
     		}
     		curr_bounds = null;
@@ -284,6 +295,16 @@ function initialize_map() {
 			}
     	}
     	drawMarkers(pins);
+    	//addKeywords();
+    }
+
+    function addKeywords(keywords_list){
+    	var html = "";
+    	// var color = rgb(0,255,0);
+    	for(var i=0; i< 20 && i<keywords_list.length; i++){
+    		html += '<span style="margin-left:10px; border-radius:20px;" class="positive_keyword" >'+keywords_list[i].text+'</span>';
+    	}
+    	return html;
     }
 
     function Comparator(a,b){
@@ -299,7 +320,9 @@ function initialize_map() {
     		},100);
     		return;
     	}
+
     	dataItems = dataItems.split("\n");
+
 		var itemsasArr = [];
 		//TODO:: Change 99 and put data length..
 		var max_d = 0;
@@ -311,22 +334,38 @@ function initialize_map() {
 		}
 
 		for(var i=0; i<dataItems.length-1; i++) {
-			var parts = dataItems[i].split(",");
+			var keyword_json = dataItems[i].substring(dataItems[i].lastIndexOf("["), dataItems[i].length);
+			if(keyword_json.charAt(keyword_json.length-1) != ']'){
+				console.log("err:"+keyword_json);
+			}
+			var remaining = dataItems[i].substring(0,dataItems[i].lastIndexOf("[")-1);
+			var parts = remaining.split(",");
+			var top_review = parts.slice(14,parts.length).join(",");
+			parts = parts.slice(0,14);
+			parts.push(top_review);
+			parts.push(keyword_json);
 			try{
 				var ratingrow = kshf.dt.Ratings[Number(parts[2])].data;
 				var pricerow = kshf.dt.Price_Range[Number(parts[3])].data;
 				var distancerow = distance_cache[Number(parts[0])];
 			}
 			catch(err){
-				console.log(parts[0]+" "+parts[2]+" "+parts[3])
+				console.log(parts[0]+" "+parts[2]+" "+parts[3]);
 			}
 			var distancerange = distancerow/max_d * Distance/100;
 			var pricerange = ((5-pricerow[1])*price/100)/4;
 			var ratings = (ratingrow[1]*Rating/100)/4.5;
-			parts.push(pricerange + ratings + distancerange);
+			parts.push((pricerange + ratings + distancerange));
 			itemsasArr.push(parts);
 		}
 		itemsasArr.sort(Comparator);
+		// for(var i=0; i<itemsasArr.length; i++){
+		// 	var temp = itemsasArr[i][15];
+		// 	if(temp.charAt(temp.length-1) != ']'){
+		// 		console.log("err:"+temp);
+		// 	}
+		// }
+		// console.log("itemsArr:%o",itemsasArr);
 		update_maps(itemsasArr);
 	}
 

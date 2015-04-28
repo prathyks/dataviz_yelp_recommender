@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)</title><meta charset="utf-8">
+    <script type="text/javascript" src="getImpKeywords.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
@@ -14,6 +15,7 @@
     <script type="text/javascript" src="slider/d3.slider.js"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../tooltip.css"/ type="text/css">
+    <link rel="stylesheet" href="../keyword.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
     <!--<script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>-->
@@ -65,9 +67,9 @@
 
             browser = new kshf.Browser({
                 domID : "#chart_div",
-                categoryTextWidth:170,
+                categoryTextWidth:130,
                 rightPanelLabelWidth: 0,
-                barChartWidth: 200,
+                barChartWidth: 160,
                 source : {
                     gdocId : '1l8_CTGgWQNAyagPRICLzPd-b9ZrqJarBdkT_7leR7mE',
                     sheets : [

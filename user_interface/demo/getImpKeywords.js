@@ -1,35 +1,37 @@
-//send the whole contents of the MainTable's Tag column as input. Processes the data for each row in the MainTable
 function getImpKeywords(dat){
-	len = dat.length
+	// console.log("dat:%o",dat);
+	dat = JSON.parse(dat);
+	// console.log("dat:%o",dat);
+	len = dat.length;
+	dat = removeUnnecessary(dat);
+	// console.log("dat:%o",dat)
 
-	removeUnnecessary(dat);
-	
 	function Comparator(a,b){
-		if(a.sentiment.score > b.sentiment.score) return -1;
-		if(a.sentiment.score < b.sentiment.score) return 1;
+		if(parseFloat(a.sentiment.score) > parseFloat(b.sentiment.score)) return -1;
+		if(parseFloat(a.sentiment.score) < parseFloat(b.sentiment.score)) return 1;
 		return 0;
 	}
-	
-	var score = [];
-	var text = [];
+	var result = new Array();
 	dat.sort(Comparator);
 	for(i = 0; i < dat.length; i++){
-		score[i] = dat[i].sentiment.score;
-		text[i] = dat[i].text;
+		var temp;
+		temp = {'score' : dat[i].sentiment.score, 'text':dat[i].text};
+		// temp.score = dat[i].sentiment.score;
+		// temp.text = dat[i].text;
+		result.push(temp);
 	}
-
-	console.log("Sentiment Score :"+score);
-	console.log("Keywords :"+text);
+	// console.log("result:%o",result);
+	return result;
 }
 
 function removeUnnecessary(a){
-	for(i = 0 ; i < len ; i++){
-		if (!a[i].hasOwnProperty('sentiment').hasOwnProperty('score')){
- 			len = len - 1;
- 			console.log('reached here');
- 			for(j = i ; j < len ; j++){
- 				a[j] = a[j+1]
- 			}
+	var new_one = new Array();
+	for(i = 0 ; i < a.length ; i++){
+		if(a[i].sentiment != undefined && a[i].sentiment.score != undefined){
+		//if (a[i].hasOwnProperty('sentiment') && a[i].sentiment.hasOwnProperty('score')){
+ 			new_one.push(a[i]);
  		}
  	}
+ 	//console.log("new_one:"+new_one);
+ 	return new_one;
 }
