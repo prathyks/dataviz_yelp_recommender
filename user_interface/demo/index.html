@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)</title><meta charset="utf-8">
+    <script type="text/javascript" src="getImpKeywords.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7uCqxU3Nig2zbCpvH74l6vnSAo9UZbcI">
+    </script>
+    <script type="text/javascript" src="google_maps/new.js"></script>
+    <script type="text/javascript" src="google_maps/loc_list.js"></script>
+    <script type="text/javascript" src="slider/d3.slider.js"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../tooltip.css"/ type="text/css">
+    <link rel="stylesheet" href="../keyword.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <!--<script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>-->
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <link rel="stylesheet" href="slider/d3.slider.css"/ type="text/css">
+    <link rel="icon" 
+      type="image/png" 
+      href="img/favicon.png">
+    <script type="text/javascript">
+
+    var QueryString = function () {
+            // This function is anonymous, is executed immediately and
+            // the return value is assigned to QueryString!
+            var query_string = {};
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                // If first entry with this name
+                if (typeof query_string[pair[0]] === "undefined") {
+                    query_string[pair[0]] = pair[1];
+                    // If second entry with this name
+                } else if (typeof query_string[pair[0]] === "string") {
+                    var arr = [ query_string[pair[0]], pair[1] ];
+                    query_string[pair[0]] = arr;
+                    // If third or later entry with this name
+                } else {
+                    query_string[pair[0]].push(pair[1]);
+                }
+            }
+            return query_string;
+        } ();
+
+        function timeOfDayText(d){
+            switch(d){
+                case 0: return "Night: 00-06";
+                case 1: return "Morning: 06-12";
+                case 2: return "Afternoon: 12-18";
+                case 3: return "Evening: 18-24";
+            }
+        }
+
+        google.setOnLoadCallback( function(){
+
+            var query = 'select *';
+            var sheetInfo = {name:"main_table"};
+            if(QueryString.set==="small") {
+                sheetInfo.range = "A1:S100";
+            }
+
+            var accCol;
+
+            browser = new kshf.Browser({
+                domID : "#chart_div",
+                categoryTextWidth:130,
+                rightPanelLabelWidth: 0,
+                barChartWidth: 160,
+                source : {
+                    gdocId : '1l8_CTGgWQNAyagPRICLzPd-b9ZrqJarBdkT_7leR7mE',
+                    sheets : [
+                    {name: "MainTable"},
+                    {name: "Price_Range"},
+                    {name: "Distance"},
+                    {name: "Categories"},
+                    {name: "Ratings"}
+                    ]
+                },
+                loadedCb: function(){
+                    MainCol = kshf.dt_ColNames.MainTable;
+                    AmbiCol = kshf.dt_ColNames.Price_Range;
+                    AttriCol = kshf.dt_ColNames.Distance;
+                    CatCol = kshf.dt_ColNames.Categories;
+                    RatCol = kshf.dt_ColNames.Ratings;
+                    // convert authors and keywords columns in publication table ( space separated IDs) to array
+                    //kshf.Util.cellToArray(kshf.dt.MainTable, [MainCol.Attributes, MainCol.Categories]);
+                },
+                facets: [
+                {
+                    facetTitle: "Categories",
+                    catTableName: "Categories",
+                    catLabelText: function(cat){ return cat.data[CatCol.category]; }
+                },{
+                    facetTitle: "Distance",
+                    catTableName: "Distance",
+                    catLabelText: function(cat){ return cat.data[AttriCol.Distance]; }
+                },{
+                    facetTitle: "Price_Range",
+                    catTableName: "Price_Range",
+                    catLabelText: function(cat){ return cat.data[AmbiCol.Price_Range]; }
+                },{
+                    facetTitle: "Ratings",
+                    catTableName: "Ratings",
+                    catLabelText: function(cat){ return cat.data[RatCol.rating]; }
+                }
+                ],
+
+                visibleCb : function(d){
+
+                },
+
+                itemDisplay: {
+                    sortColWidth: 45,
+                    sortingOpts:[
+                    {
+                        name : 'Year',
+                        value : function(d){
+                            return d.data[MainCol['id']];
+                        }
+                    }
+                    ],
+                    textSearch: 'title',
+                    detailsToggle: "One",
+                    contentFunc: function(d){
+                        var j;
+                        var str = "";
+                        str = "<p>" + d.data[MainCol.title] + "</p>";
+                        return str;
+                    } 
+                }
+                
+
+            });
+            //initialize_map();
+
+    });
+
+
+</script>
+<style>
+.iteminfo a{
+    color:#606060;
+    font-style:italic;
+}
+#chart_div{
+    height: 700px;
+    width: 100%;
+    float:left;
+}
+/*#map-canvas { height: 600px; margin: 0; padding: 0; width:60%;}*/
+</style>
+</head>
+<body>
+    <div class="contents">
+        <div id="chart_div">
+            <!-- <div class="listHeader"></div>     -->
+        </div>
+        
+        <!-- <div id="map-canvas"></div> -->
+    </div>
+</body>
+</html>
