@@ -1,4 +1,4 @@
-var home = {'lat' :33.428437, 'long': -111.947480};
+
 
 var locations_list = [
 		{ 'lat' : 33.422998, 'long': -111.940005},
