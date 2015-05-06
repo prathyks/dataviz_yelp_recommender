@@ -1280,7 +1280,8 @@ kshf.List = function(kshf_, config, root){
     this.dom.listHeader=this.listDiv.append('div').attr('class', "listHeader");
     
     // Code to add slider which gives weight to the filtering criteria in recommendation.
-	this.dom.svg = this.listDiv.append('svg').attr('width', '200px').attr('height', '25px');
+	this.dom.svg = this.listDiv.append('svg').attr('width', '200px').attr('height', '25px')
+    .style('float',"left");
 	
 	this.dom.svg.append('rect').attr('x','5').attr('y','5').attr('width', '15').attr('height', 15).attr('fill','#21B903').attr('stroke', 'black');
 	this.dom.svg.append('text').attr('x','25').attr('y','17').text('Price').attr('fill', 'black').attr('font-size','12px');
@@ -1289,7 +1290,9 @@ kshf.List = function(kshf_, config, root){
 	this.dom.svg.append('rect').attr('x','140').attr('y','5').attr('width', '15').attr('height', 15).attr('fill', '#D4DB0D').attr('stroke', 'black');
 	this.dom.svg.append('text').attr('x','160').attr('y','17').text('Rating').attr('fill', 'black').attr('font-size','12px');
 	this.dom.slider = this.listDiv.append('div').attr('id','slider')
-    .style('width',"500px").style('height', "15px").style("margin-left","5px").style("margin-top","5px").style("margin-bottom","5px").style('display','inline-block');
+    .style('width',"500px").style('height', "15px").style("margin-left","5px")
+    .style("margin-top","5px").style("margin-bottom","5px").style('display','inline-block')
+    .style('float',"left");
 
     this.dom.slider.call(d3.slider().axis(true).value( [ 33, 66 ] ).on("slideend", function(evt, v) {
             //d3.select('#slider3textmin').text(value[ 0 ]);
@@ -1299,6 +1302,15 @@ kshf.List = function(kshf_, config, root){
             //window.alert(v[0] + ", "+v[1]);
             //d3.select('#slider3textmax').text(value[ 1 ]);
         }));
+
+    // this.dom.reset_button = this.listDiv.append('div').attr('id','slider_reset')
+    //     .style("margin-left", "20px").style("float", "left").style("margin-top", "5px");
+    // this.dom.reset_button.html('<a href="#" class="btn pill">Reset</a>');
+    // $("#slider_reset").data('sliderobj', this.dom.slider);
+    // $("#slider_reset").on('click', function(){
+
+    // })
+    this.listDiv.append('div').style('clear',"both");
 
     this.dom.map = this.listDiv.append('div').attr('id','map-canvas')
         .style('width',"75%").style('height', "450px").style("float","left");
@@ -1399,6 +1411,7 @@ kshf.List = function(kshf_, config, root){
     this.dom.showMore.append("span").attr("class","loading_dots loading_dots_2");
     this.dom.showMore.append("span").attr("class","loading_dots loading_dots_3");
 };
+
 kshf.List.prototype = {
     /* -- */
     insertGlobalTextSearch: function(){
