@@ -270,12 +270,24 @@ function update_maps(dataItems) {
 		if (lat != undefined && longitude != undefined)
 			latlngList.push(new google.maps.LatLng(lat, longitude));
 		if(i == 0){
+			var request = {
+				origin: cur_pos.getPosition(),
+				destination: new google.maps.LatLng(lat, longitude),
+				travelMode: google.maps.TravelMode.DRIVING
+			};
 			var distance = [];
-			distance.push({'text': "7.9 mi"});
-			distance.push({'text': "12 minutes"});
+
+			directionsService.route(request, function(response, status) {
+				if (status == google.maps.DirectionsStatus.OK) {
+					// directionsDisplay.setMap(map);
+					// directionsDisplay.setDirections(response);
+					distance_info = get_distance_info(response);
+					fillInfoBox(distance_info);
+				}
+			});
 			$("#info_space").append(infoText);
 			$("#keyword_space").append(keywords_html);
-			fillInfoBox(distance);
+			// fillInfoBox(distance);
 		}
 		if (i < 10) {
 			var marker = catData[3] + (i + 1) + ".png";
